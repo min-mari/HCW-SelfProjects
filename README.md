@@ -27,7 +27,7 @@ Each project is self-contained, runnable in IntelliJ IDEA, and written in **Java
 
 | Project | Description |
 |----------|--------------|
-| `FunctionChecker` | A math utility that evaluates and checks function behavior based on given parameters. Includes test logic for input ranges and expected results. |
+| `FunctionChecker` | A math utility that evaluates and checks function behavior based on given parameters.|
 
 ---
 
