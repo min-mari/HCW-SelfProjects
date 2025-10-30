@@ -134,7 +134,7 @@ public class FunctionChecker
         System.out.println("(Kein eindeutiger Funktionswert → kein Funktionsgraph.)");
     }
 
-    // ---------------- Plotter ohne Interfaces ----------------
+    //plotting
 
     private static void drawCircle(double c, double tol)
     {
@@ -148,19 +148,19 @@ public class FunctionChecker
                 char ch;
                 if (approxEqual(x * x + y * y, c, tol))
                 {
-                    ch = '*'; // Kurvenpunkt
+                    ch = '*'; //Kurvenpunkt
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+'; // Ursprung
+                    ch = '+'; //Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|'; // y-Achse
+                    ch = '|'; //y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-'; // x-Achse
+                    ch = '-'; //x-Achse
                 }
                 else
                 {
@@ -186,19 +186,19 @@ public class FunctionChecker
                 boolean inside = (y != 0) && ((double) x / (double) y > k);
                 if (inside)
                 {
-                    ch = '.'; // schattiert
+                    ch = '.'; //schattiert
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+'; // Ursprung
+                    ch = '+'; //Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|'; // y-Achse
+                    ch = '|'; //y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-'; // x-Achse
+                    ch = '-'; //x-Achse
                 }
                 else
                 {
@@ -226,19 +226,19 @@ public class FunctionChecker
 
                 if (onCurve)
                 {
-                    ch = '*'; // Kurvenpunkt
+                    ch = '*'; //Kurvenpunkt
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+'; // Ursprung
+                    ch = '+'; //Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|'; // y-Achse
+                    ch = '|'; //y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-'; // x-Achse
+                    ch = '-'; //x-Achse
                 }
                 else
                 {
@@ -265,19 +265,19 @@ public class FunctionChecker
 
                 if (onCurve)
                 {
-                    ch = '*'; // Kurvenpunkt
+                    ch = '*'; //Kurvenpunkt
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+'; // Ursprung
+                    ch = '+'; //Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|'; // y-Achse
+                    ch = '|'; //y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-'; // x-Achse
+                    ch = '-'; //x-Achse
                 }
                 else
                 {
