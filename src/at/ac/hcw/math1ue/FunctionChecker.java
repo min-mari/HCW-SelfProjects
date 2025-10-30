@@ -65,7 +65,7 @@ public class FunctionChecker
         System.out.println("Geometrie: Kreis mit Radius r = sqrt(2).");
         System.out.println("Funktionsfrage: KEINE Funktion, da für x in (-r, r) zwei y-Werte existieren (±sqrt(c - x^2)).");
         System.out.println("Skizze (Punkte auf dem Kreis werden mit '*', Achsen mit '|' und '-' dargestellt):");
-        drawImplicit((x, y) -> approxEqual(x * x + y * y, c, 0.35));
+        drawCircle(c, 0.35);
     }
 
     //(b)
@@ -76,8 +76,8 @@ public class FunctionChecker
         System.out.println("(b)  x / y > " + k);
         System.out.println("Geometrie: Ungleichung beschreibt einen Bereich (mit y ≠ 0).");
         System.out.println("Funktionsfrage: KEINE Funktion (Bereich ≠ eindeutigem Graphen y(x)).");
-        System.out.println("Skizze (Bereich als '.' schattiert; Achsen mit '|' und '-'):");
-        drawRegion((x, y) -> y != 0 && (x / y) > k);
+        System.out.println("Skizze (Bereich als '.' schattiert; Achsen mit '|' und '-'): ");
+        shadeRegionXYOverYGreaterThanK(k);
     }
 
     //(c)
@@ -89,7 +89,7 @@ public class FunctionChecker
         System.out.println("Umformung: |y| = " + k + " - x  ⇒ Lösungen nur für x ≤ " + k + ".");
         System.out.println("Für die meisten x ≤ " + k + " existieren zwei y-Werte (±(k - x)) ⇒ KEINE Funktion.");
         System.out.println("Skizze (zwei Äste eines nach +x geöffneten 'V'):");
-        drawImplicit((x, y) -> approxEqual(Math.abs(y), k - x, 0.25) && (x <= k + 1e-9));
+        drawAbsYEqualsKMinusX(k, 0.25);
     }
 
     //(d)
@@ -101,7 +101,7 @@ public class FunctionChecker
         System.out.println("Umformung: y = " + k + " - |x|.");
         System.out.println("Für jedes x genau ein y ⇒ IST eine Funktion. Peak bei (0, " + k + ").");
         System.out.println("Skizze (auf dem Gitter als umgekehrtes 'V'):");
-        drawImplicit((x, y) -> approxEqual(y, k - Math.abs(x), 0.25));
+        drawYEqualsKMinusAbsX(k, 0.25);
     }
 
     //(e)
@@ -134,20 +134,9 @@ public class FunctionChecker
         System.out.println("(Kein eindeutiger Funktionswert → kein Funktionsgraph.)");
     }
 
+    // ---------------- Plotter ohne Interfaces ----------------
 
-    //für die Graphen
-    private interface ImplicitTest
-    {
-        boolean hit(double x, double y);
-    }
-
-    private interface RegionTest
-    {
-        boolean inside(double x, double y);
-    }
-
-    //Punkte für die Gleichung
-    private static void drawImplicit(ImplicitTest test)
+    private static void drawCircle(double c, double tol)
     {
         int min = -6, max = 6;
 
@@ -157,21 +146,21 @@ public class FunctionChecker
             for (int x = min; x <= max; x++)
             {
                 char ch;
-                if (test.hit(x, y))
+                if (approxEqual(x * x + y * y, c, tol))
                 {
-                    ch = '*';     //Kurvenpunkt
+                    ch = '*'; // Kurvenpunkt
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+';     //Ursprung
+                    ch = '+'; // Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|';     //y-Achse
+                    ch = '|'; // y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-';     //x-Achse
+                    ch = '-'; // x-Achse
                 }
                 else
                 {
@@ -184,8 +173,7 @@ public class FunctionChecker
         System.out.println();
     }
 
-    // "Schraffur"
-    private static void drawRegion(RegionTest test)
+    private static void shadeRegionXYOverYGreaterThanK(double k)
     {
         int min = -6, max = 6;
 
@@ -195,21 +183,22 @@ public class FunctionChecker
             for (int x = min; x <= max; x++)
             {
                 char ch;
-                if (test.inside(x, y))
+                boolean inside = (y != 0) && ((double) x / (double) y > k);
+                if (inside)
                 {
-                    ch = '.';     //schattiert
+                    ch = '.'; // schattiert
                 }
                 else if (x == 0 && y == 0)
                 {
-                    ch = '+';     //Ursprung
+                    ch = '+'; // Ursprung
                 }
                 else if (x == 0)
                 {
-                    ch = '|';     //y-Achse
+                    ch = '|'; // y-Achse
                 }
                 else if (y == 0)
                 {
-                    ch = '-';     //x-Achse
+                    ch = '-'; // x-Achse
                 }
                 else
                 {
@@ -222,15 +211,93 @@ public class FunctionChecker
         System.out.println();
     }
 
-    //Math helpers
+    private static void drawAbsYEqualsKMinusX(double k, double tol)
+    {
+        int min = -6, max = 6;
+        double eps = 1e-9;
 
-    //Num vergleich
+        for (int y = max; y >= min; y--)
+        {
+            StringBuilder row = new StringBuilder();
+            for (int x = min; x <= max; x++)
+            {
+                char ch;
+                boolean onCurve = (x <= k + eps) && approxEqual(Math.abs(y), k - x, tol);
+
+                if (onCurve)
+                {
+                    ch = '*'; // Kurvenpunkt
+                }
+                else if (x == 0 && y == 0)
+                {
+                    ch = '+'; // Ursprung
+                }
+                else if (x == 0)
+                {
+                    ch = '|'; // y-Achse
+                }
+                else if (y == 0)
+                {
+                    ch = '-'; // x-Achse
+                }
+                else
+                {
+                    ch = ' ';
+                }
+                row.append(ch);
+            }
+            System.out.println(row);
+        }
+        System.out.println();
+    }
+
+    private static void drawYEqualsKMinusAbsX(double k, double tol)
+    {
+        int min = -6, max = 6;
+
+        for (int y = max; y >= min; y--)
+        {
+            StringBuilder row = new StringBuilder();
+            for (int x = min; x <= max; x++)
+            {
+                char ch;
+                boolean onCurve = approxEqual(y, k - Math.abs(x), tol);
+
+                if (onCurve)
+                {
+                    ch = '*'; // Kurvenpunkt
+                }
+                else if (x == 0 && y == 0)
+                {
+                    ch = '+'; // Ursprung
+                }
+                else if (x == 0)
+                {
+                    ch = '|'; // y-Achse
+                }
+                else if (y == 0)
+                {
+                    ch = '-'; // x-Achse
+                }
+                else
+                {
+                    ch = ' ';
+                }
+                row.append(ch);
+            }
+            System.out.println(row);
+        }
+        System.out.println();
+    }
+
+    //help
+
     private static boolean approxEqual(double a, double b, double tol)
     {
         return Math.abs(a - b) <= tol;
     }
 
-    //gr. Primteiler von n (n ≥ 2) bestimmen oder 0
+    //größter Primteiler oder 0
     private static int largestPrimeDivisorOrZero(int n)
     {
         if (n < 2) return 0;
@@ -245,7 +312,6 @@ public class FunctionChecker
         return largest;
     }
 
-    //Primal-test für kleine n
     private static boolean isPrime(int n)
     {
         if (n < 2) return false;
@@ -256,7 +322,6 @@ public class FunctionChecker
         return true;
     }
 
-    //Primteiler von n (aufst.)
     private static void printPrimeDivisors(int n)
     {
         boolean first = true;
@@ -271,3 +336,4 @@ public class FunctionChecker
         }
     }
 }
+
